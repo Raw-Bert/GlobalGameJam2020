@@ -89,7 +89,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8214979673905168203}
   - component: {fileID: 3998014165869985558}
-  - component: {fileID: 3998014165869985556}
   - component: {fileID: 3998014165869985559}
   m_Layer: 0
   m_Name: WateringCan
@@ -129,19 +128,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &3998014165869985556
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4925286139259850072}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.63004553
-  m_Center: {x: 3.6736152, y: 0.040102005, z: 3.583672}
 --- !u!114 &3998014165869985559
 MonoBehaviour:
   m_ObjectHideFlags: 0
