@@ -53,15 +53,25 @@ public class ConveyorBeltScript : MonoBehaviour
             //    play = false;
             //}
 
-
-            otherRB.velocity = new Vector3(0, 0, 0);
+            otherRB.constraints = RigidbodyConstraints.FreezeRotation;
+            otherRB.velocity = new Vector3();
             if (play)
-                otherRB.velocity = speed * transform.forward;
+            {
+                otherRB.velocity = otherRB.velocity + (speed * transform.forward);
 
+
+            }
 
         }
     }
 
+    private void OnCollisionExit(Collision other)
+    {
+        other.gameObject.GetComponent<Rigidbody>().constraints = 0;
+    }
+
+
+    private Vector3 multiVec3(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     //public static  bool operator<=(Vector3 a,Vector3 b)=> a.magnitude >= 
 
     //public static Vector3 operator *(Vector3 a, Vector3 b)
