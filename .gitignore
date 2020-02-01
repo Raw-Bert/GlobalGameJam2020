@@ -60,3 +60,11 @@ crashlytics-build.properties
 
 
 *.json
+
+Global 2020/Temp/
+
+Global 2020/Library/Artifacts/
+
+Global 2020/Library/SourceAssetDB
+
+Global 2020/Library/ArtifactDB
