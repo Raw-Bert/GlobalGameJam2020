@@ -69,8 +69,8 @@ public class PlayerHand : MonoBehaviour
         if(currentInteractable.activeHand)
             currentInteractable.activeHand.Drop();
 
-        // Position
-        currentInteractable.transform.position = transform.position;
+        //// Position
+        //currentInteractable.transform.position = transform.position;
 
         // Attach
         Rigidbody targetBody = currentInteractable.GetComponent<Rigidbody>();
@@ -107,6 +107,8 @@ public class PlayerHand : MonoBehaviour
 
         foreach(InteractableObject interactable in contactInteractables)
         {
+            if(!interactable)
+                continue;
             distance = (interactable.transform.position - transform.position).sqrMagnitude;
 
             if(distance<minDistance)
