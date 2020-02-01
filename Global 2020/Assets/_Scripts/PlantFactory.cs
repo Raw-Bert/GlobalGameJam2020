@@ -5,22 +5,95 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+
 public class PlantFactory : MonoBehaviour
 {
-    public GameObject soil;
-    public GameObject soilDry;
-    public GameObject stem;
-    public GameObject stemBroken;
-    public GameObject pot;
-    public GameObject potBroken;
-    public GameObject plantHead;
+    private ObjectPool myPool;
 
-    public static Dictionary<int, Type> factoryDict;
-    private static ObjectPool myPool;
+    public Transform spawnOrientation;
+
+    [System.Serializable]
+    public class PlantBottom
+    {
+        public string tag;
+
+        //Only a single bottom is needed as the soil prefab must match the pot prefab
+
+        public GameObject potNormal;
+        public GameObject potBroken;
+
+        public GameObject soilNormal;
+        public GameObject soilDry;
+        public GameObject soilNeedsFertalizer;
+    }
+
+    [System.Serializable]
+    public class PlantStem
+    {
+        public string tag;
+
+        public GameObject stemNormal;
+        public GameObject stemLimp;
+        public GameObject stemBroken;
+    }
+
+    [System.Serializable]
+    public class PlantHead
+    {
+        public string tag;
+     
+        public GameObject headNormal;
+        public GameObject headPetalMissing;
+    }
+
+
+    public List<PlantBottom> plantBottoms = new List<PlantBottom>();
+    public List<PlantStem> plantStems;
+    public List<PlantHead> plantHeads;
 
     // Start is called before the first frame update
     void Start()
     {
+        myPool = ObjectPool.Instance;
+        
+        int instances = 20;
+
+        foreach (PlantBottom pb in plantBottoms){
+            if (pb is null)
+                Debug.Log("NULL");
+                //continue;
+
+            ObjectPool.Pool _pool = new ObjectPool.Pool(pb.tag + "_pot_normal", pb.potNormal, instances);
+
+            Debug.Log(_pool.size);
+            Debug.Log(myPool.name);
+            
+
+            if (_pool is null)
+                Debug.Log("NULL2");
+                //continue;
+
+            myPool.AddPool(_pool);
+            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_pot_broken", pb.potBroken, instances));
+            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_normal", pb.soilNormal, instances));
+            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_dry", pb.soilDry, instances));
+            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_needs_fertilizer", pb.soilNeedsFertalizer, instances));
+        }
+
+        foreach (PlantStem ps in plantStems)
+        {
+            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_normal", ps.stemNormal, instances));
+            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_limp", ps.stemLimp, instances));
+            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_broken", ps.stemBroken, instances));
+        }
+
+        foreach (PlantHead ph in plantHeads)
+        {
+            myPool.AddPool(new ObjectPool.Pool(ph.tag + "_head_normal", ph.headNormal, instances));
+            myPool.AddPool(new ObjectPool.Pool(ph.tag + "_head_petal_missing", ph.headPetalMissing, instances));
+        }
+
+        /*
         //assign cube type to static cube
         //initialize cube maker
         var factoryTypes = Assembly.GetAssembly(typeof(CubeMaker)).GetTypes().
@@ -35,88 +108,139 @@ public class PlantFactory : MonoBehaviour
             var tempCube = Activator.CreateInstance(type) as CubeMaker;
             factoryDict.Add(tempCube.Name, type);
         }
+        */
     }
 
-    //use cube maker to make certain type cube at certain position with certain rotation
-    public static CubeMaker MakeCube(int cubeType, Vector3 position, Quaternion rotation)
+    public enum HeadState
     {
-        if(factoryDict.ContainsKey(cubeType))
-        {
-            Type type = factoryDict[cubeType];
-            var cube = Activator.CreateInstance(type) as CubeMaker;
-            cube.SpawnCube(position, rotation);
-            return cube;
-        }
-        return null;
+        normal,
+        missing_petals,
     }
 
-    //Cube maker contain a function could spawn cube
-    public abstract class CubeMaker
+    public enum StemState
     {
-        public abstract int Name { get; }
-        public abstract void SpawnCube(Vector3 pos, Quaternion rot);
+        normal,
+        limp,
+        broken,
+    }
+    public enum PotState
+    {
+        normal,
+        broken,
     }
 
-    public class MakeSoil:CubeMaker
+    public enum SoilState
     {
-        public override int Name => 1;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Soil", pos, rot);
-        }
+        normal,
+        dry,
+        discolored,
     }
 
-    public class MakeDrySoil : CubeMaker
+    public enum PlantProblem
     {
-        public override int Name => 2;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Dry Soil", pos, rot);
-        }
+        thirsty,
+        broken_pot,
+        bumped,
+        plant_too_large,
+        malnourished,
+        infestation,
+        sick,
+        romantic_owner,
     }
 
-    public class MakeStem : CubeMaker
+    static T RandomEnumValue<T>()
     {
-        public override int Name => 3;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Stem", pos, rot);
-        }
+        var v = Enum.GetValues(typeof(T));
+        return (T)v.GetValue(new System.Random().Next(v.Length));
     }
 
-    public class MakeBrokenStem : CubeMaker
+    private PlantProblem GenerateProblem()
     {
-        public override int Name => 4;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Broken Stem", pos, rot);
-        }
+        return RandomEnumValue<PlantProblem>();
     }
 
-    public class MakePot : CubeMaker
+
+    private Tuple<HeadState, StemState, PotState, SoilState> AttributeBuilder(PlantProblem problem)
     {
-        public override int Name => 5;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Pot", pos, rot);
+        //Tuple<HeadState, StemState, PotState, SoilState> plant_state;
+
+        switch (problem){
+            case PlantProblem.thirsty:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.normal, SoilState.normal);
+            
+            case PlantProblem.broken_pot:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.bumped:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.plant_too_large:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.malnourished:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.infestation:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.sick:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            case PlantProblem.romantic_owner:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+
+            default:
+                return new Tuple<HeadState, StemState, PotState, SoilState>
+                    (HeadState.normal, StemState.normal, PotState.normal, SoilState.normal);
         }
+
     }
-     public class MakeBrokenPot : CubeMaker
+
+    public GameObject CreatePlant()
     {
-        public override int Name => 6;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Broken Pot", pos, rot);
-        }
-    }
-    public class MakePlantHead : CubeMaker
-    {
-        public override int Name => 7;
-        public override void SpawnCube(Vector3 pos, Quaternion rot)
-        {
-            myPool.SpawnObject("Plant", pos, rot);
-        }
+        PlantProblem problem = GenerateProblem();
+        Tuple<HeadState, StemState, PotState, SoilState> attributes = AttributeBuilder(problem);
+
+
+        //Pull data from the generated tuple
+        HeadState ehead = attributes.Item1;
+        StemState estem = attributes.Item2;
+        PotState epot = attributes.Item3;
+        SoilState esoil = attributes.Item4;
+
+
+
+        GameObject plant_parent;
+        GameObject plant_top;
+        GameObject plant_stem;
+        GameObject plant_head;
+        GameObject plant_bottom;
+
+        plant_parent = new GameObject();
+
+        plant_top = new GameObject();
+        plant_top.transform.parent = plant_parent.transform;
+
+        plant_stem = new GameObject();
+        plant_stem.transform.parent = plant_top.transform;
+
+        plant_head = new GameObject();
+        plant_head.transform.parent = plant_top.transform;
+
+        plant_bottom = new GameObject();
+        plant_bottom.transform.parent = plant_parent.transform;
+        
+        return plant_parent;
     }
 
 
 }
+
