@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 5076228755725917811}
   - component: {fileID: 1758231766388676247}
   - component: {fileID: 6456144522278743351}
+  - component: {fileID: 3335328002739996057}
   m_Layer: 0
   m_Name: Pot
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -110,3 +111,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3335328002739996057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453658251143651039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b87630158abddf848a7b4cc5df9ca6dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeHand: {fileID: 0}

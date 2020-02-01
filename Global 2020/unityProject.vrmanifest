@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.global2020.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "D:\\Assignments\\GlobalGameJam2020\\Global 2020\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\rsand\\Documents\\Repos\\Global 2020\\GlobalGameJam2020\\Global 2020\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "Global 2020 [Testing]"
