@@ -48,18 +48,42 @@ public class ConveyorBeltScript : MonoBehaviour
         var otherTrans = other.transform;
         if (otherRB)
         {
-            //if (InRange(otherTrans.position, transform.position - transform.forward * centerWidth, transform.position + transform.forward * centerWidth))
+            //if (InRange(otherTrans.position * new Vector3(1, 0, 1) - transform.position * new Vector3(1, 0, 1), centerWidth / 2 * transform.forward, centerWidth / 2 * -transform.forward))
             //{
             //    play = false;
             //}
+
+            otherRB.constraints = RigidbodyConstraints.FreezeRotation;
+            otherRB.velocity = new Vector3();
             if (play)
-                otherRB.velocity = speed * transform.forward;
+            {
+                otherRB.velocity = otherRB.velocity + (speed * transform.forward);
+
+
+            }
+
         }
     }
 
-//public static  bool operator<=(Vector3 a,Vector3 b)=> a.magnitude >= 
+    private void OnCollisionExit(Collision other)
+    {
+        other.gameObject.GetComponent<Rigidbody>().constraints = 0;
+    }
 
-    private bool InRange(Vector3 check, Vector3 low, Vector3 high) => check.magnitude - low.magnitude <= check.magnitude - high.magnitude;
 
+    private Vector3 multiVec3(Vector3 a, Vector3 b) => new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+    //public static  bool operator<=(Vector3 a,Vector3 b)=> a.magnitude >= 
+
+    //public static Vector3 operator *(Vector3 a, Vector3 b)
+    //{
+    //
+    //    return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+    //}
+
+    private bool InRange(Vector3 check, Vector3 low, Vector3 high)
+    {
+
+        return (low - check).magnitude <= (high - check).magnitude;
+    }
 
 }
