@@ -9,7 +9,7 @@ public class WateringScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (transform.rotation.x > 45)
+        if (transform.rotation.x < -20)
         
             system.Play();
         else
