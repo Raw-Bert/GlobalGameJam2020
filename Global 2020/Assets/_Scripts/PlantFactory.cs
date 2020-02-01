@@ -59,25 +59,14 @@ public class PlantFactory : MonoBehaviour
         int instances = 20;
 
         foreach (PlantBottom pb in plantBottoms){
-            if (pb is null)
-                Debug.Log("NULL");
-                //continue;
 
-            ObjectPool.Pool _pool = new ObjectPool.Pool(pb.tag + "_pot_normal", pb.potNormal, instances);
-
-            Debug.Log(_pool.size);
-            Debug.Log(myPool.name);
-            
-
-            if (_pool is null)
-                Debug.Log("NULL2");
-                //continue;
-
-            myPool.AddPool(_pool);
+            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_pot_normal", pb.potNormal, instances));
             myPool.AddPool(new ObjectPool.Pool(pb.tag + "_pot_broken", pb.potBroken, instances));
             myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_normal", pb.soilNormal, instances));
             myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_dry", pb.soilDry, instances));
             myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_needs_fertilizer", pb.soilNeedsFertalizer, instances));
+
+            Debug.Log("MyPool: " + myPool.poolDict.Keys);
         }
 
         foreach (PlantStem ps in plantStems)
@@ -204,6 +193,11 @@ public class PlantFactory : MonoBehaviour
 
     }
 
+    private GameObject getRandHeadPool()
+    {
+        return myPool.SpawnObject
+    }
+
     public GameObject CreatePlant()
     {
         PlantProblem problem = GenerateProblem();
@@ -215,8 +209,6 @@ public class PlantFactory : MonoBehaviour
         StemState estem = attributes.Item2;
         PotState epot = attributes.Item3;
         SoilState esoil = attributes.Item4;
-
-
 
         GameObject plant_parent;
         GameObject plant_top;

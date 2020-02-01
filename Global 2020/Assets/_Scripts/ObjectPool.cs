@@ -63,20 +63,12 @@ public class ObjectPool : MonoBehaviour
             objectPool.Enqueue(ob);
         }
 
-
-        Debug.Log("IDK");
-        Debug.Log(Instance.name);
-        Debug.Log(Instance.poolDict.Count);
-
-        Debug.Log(toAdd.tag);
-        Debug.Log(objectPool.Count);
-
         Instance.poolDict.Add(toAdd.tag, objectPool);
     }
 
 
     //using certain pool inside the pool dictionary to spawn object
-    public GameObject SpawnObject(string tag, Vector3 pos, Quaternion rot)
+    public GameObject SpawnObject(string tag, Transform transform)
     {
         //Check if the tag exist in the dictionary
         if (!Instance.poolDict.ContainsKey(tag))
@@ -89,8 +81,12 @@ public class ObjectPool : MonoBehaviour
         //Take off the first object of pool's queue
         GameObject objectGoSpawn = Instance.poolDict[tag].Dequeue();
         objectGoSpawn.SetActive(true);
-        objectGoSpawn.transform.position = pos;
-        objectGoSpawn.transform.rotation = rot;
+
+        objectGoSpawn.transform.position = transform.position;
+        objectGoSpawn.transform.rotation = transform.rotation;
+        objectGoSpawn.transform.parent = transform.parent;
+
+
         objectGoSpawn.tag = tag;
 
         //Put this object to the end of pool's  queue
