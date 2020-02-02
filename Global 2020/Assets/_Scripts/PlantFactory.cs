@@ -41,63 +41,95 @@ public class PlantFactory : MonoBehaviour
     public class PlantHead
     {
         public string tag;
-     
+
         public GameObject headNormal;
         public GameObject headPetalMissing;
     }
 
 
-    public List<PlantBottom> plantBottoms = new List<PlantBottom>();
+    public List<PlantBottom> plantBottoms;
     public List<PlantStem> plantStems;
     public List<PlantHead> plantHeads;
+
+    public enum PoolObjects
+    {
+        pot_normal,
+        pot_broken,
+
+        soil_normal,
+        soil_dry,
+        soil_needs_fertilizer,
+
+        stem_normal,
+        stem_limp,
+        stem_broken,
+
+        head_normal,
+        head_petal_missing
+    }
+
+    public Dictionary<PoolObjects, List<string>> PoolEnumListStrLookup = new Dictionary<PoolObjects, List<string>>();
+
 
     // Start is called before the first frame update
     void Start()
     {
         myPool = ObjectPool.Instance;
-        
+
         int instances = 20;
 
-        foreach (PlantBottom pb in plantBottoms){
+        foreach (PlantBottom pb in plantBottoms) {
+            addToStructures(pb.tag, "_pot_normal", PoolObjects.pot_normal, pb.potNormal, instances);
+            addToStructures(pb.tag, "_pot_broken", PoolObjects.pot_broken, pb.potBroken, instances);
 
-            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_pot_normal", pb.potNormal, instances));
-            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_pot_broken", pb.potBroken, instances));
-            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_normal", pb.soilNormal, instances));
-            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_dry", pb.soilDry, instances));
-            myPool.AddPool(new ObjectPool.Pool(pb.tag + "_soil_needs_fertilizer", pb.soilNeedsFertalizer, instances));
+            addToStructures(pb.tag, "_soil_normal", PoolObjects.soil_normal, pb.soilNormal, instances);
+            addToStructures(pb.tag, "_soil_dry", PoolObjects.soil_dry, pb.soilDry, instances);
+            addToStructures(pb.tag, "_soil_needs_fertilizer", PoolObjects.soil_needs_fertilizer, pb.soilNeedsFertalizer, instances);
 
-            Debug.Log("MyPool: " + myPool.poolDict.Keys);
+            Debug.Log("MyPool: " + myPool.poolDict);
         }
 
         foreach (PlantStem ps in plantStems)
         {
-            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_normal", ps.stemNormal, instances));
-            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_limp", ps.stemLimp, instances));
-            myPool.AddPool(new ObjectPool.Pool(ps.tag + "_stem_broken", ps.stemBroken, instances));
+            addToStructures(ps.tag, "_stem_normal", PoolObjects.stem_normal, ps.stemNormal, instances);
+            addToStructures(ps.tag, "_stem_limp", PoolObjects.stem_limp, ps.stemLimp, instances);
+            addToStructures(ps.tag, "_stem_broken", PoolObjects.stem_broken, ps.stemBroken, instances);
         }
 
         foreach (PlantHead ph in plantHeads)
         {
-            myPool.AddPool(new ObjectPool.Pool(ph.tag + "_head_normal", ph.headNormal, instances));
-            myPool.AddPool(new ObjectPool.Pool(ph.tag + "_head_petal_missing", ph.headPetalMissing, instances));
+            addToStructures(ph.tag, "_head_normal", PoolObjects.head_normal, ph.headNormal, instances);
+            addToStructures(ph.tag, "_head_petal_missing", PoolObjects.head_petal_missing, ph.headPetalMissing, instances);
         }
+    }
 
-        /*
-        //assign cube type to static cube
-        //initialize cube maker
-        var factoryTypes = Assembly.GetAssembly(typeof(CubeMaker)).GetTypes().
-            Where(myType => myType.IsClass && !myType.IsAbstract && myType.
-            IsSubclassOf(typeof(CubeMaker)));
-
-        factoryDict = new Dictionary<int, Type>();
-        myPool = ObjectPool.Instance;
-
-        foreach(var type in factoryTypes)
+    public bool CreateFlower;
+    private void Update()
+    {
+        if (CreateFlower)
         {
-            var tempCube = Activator.CreateInstance(type) as CubeMaker;
-            factoryDict.Add(tempCube.Name, type);
+            CreatePlant();
+            CreateFlower = false;
         }
-        */
+        
+    }
+
+    private void addToStructures(string tag_prefix, string tag_suffix, PoolObjects pool_enum_val, GameObject prefab, int pool_instances)
+    {
+        string tag = tag_prefix + tag_suffix;
+        myPool.AddPool(new ObjectPool.Pool(tag, prefab, pool_instances));
+
+        //Debug.Log(PoolEnumListStrLookup[pool_enum_val]);
+
+        if (PoolEnumListStrLookup.ContainsKey(pool_enum_val))
+        {
+            PoolEnumListStrLookup[pool_enum_val].Add(tag);
+        }
+        else
+        {
+            PoolEnumListStrLookup.Add(pool_enum_val, new List<string>() { tag });
+        }
+
     }
 
     public enum HeadState
@@ -105,6 +137,12 @@ public class PlantFactory : MonoBehaviour
         normal,
         missing_petals,
     }
+    public Dictionary<HeadState, PoolObjects> HeadStatePoolObjectMapping = new Dictionary<HeadState, PoolObjects>()
+    {
+            {HeadState.normal, PoolObjects.head_normal},
+            {HeadState.missing_petals, PoolObjects.head_petal_missing},
+    };
+        
 
     public enum StemState
     {
@@ -112,11 +150,22 @@ public class PlantFactory : MonoBehaviour
         limp,
         broken,
     }
+    public Dictionary<StemState, PoolObjects> StemStatePoolObjectMapping = new Dictionary<StemState, PoolObjects>()
+    {
+            {StemState.normal, PoolObjects.stem_normal},
+            {StemState.limp, PoolObjects.stem_limp},
+            {StemState.broken, PoolObjects.stem_broken},
+    };
     public enum PotState
     {
         normal,
         broken,
     }
+    public Dictionary<PotState, PoolObjects> PotStatePoolObjectMapping = new Dictionary<PotState, PoolObjects>()
+    {
+            {PotState.normal, PoolObjects.pot_normal},
+            {PotState.broken, PoolObjects.pot_broken},
+    };
 
     public enum SoilState
     {
@@ -124,6 +173,12 @@ public class PlantFactory : MonoBehaviour
         dry,
         discolored,
     }
+    public Dictionary<SoilState, PoolObjects> SoilStatePoolObjectMapping = new Dictionary<SoilState, PoolObjects>()
+    {
+            {SoilState.normal, PoolObjects.soil_normal},
+            {SoilState.dry, PoolObjects.soil_dry},
+            {SoilState.discolored, PoolObjects.soil_needs_fertilizer},
+    };
 
     public enum PlantProblem
     {
@@ -137,10 +192,18 @@ public class PlantFactory : MonoBehaviour
         romantic_owner,
     }
 
+
+
     static T RandomEnumValue<T>()
     {
         var v = Enum.GetValues(typeof(T));
         return (T)v.GetValue(new System.Random().Next(v.Length));
+    }
+
+    static T RandomListElement<T>(List<T> list)
+    {
+        int index = (new System.Random()).Next(list.Count);
+        return list[index];
     }
 
     private PlantProblem GenerateProblem()
@@ -193,10 +256,7 @@ public class PlantFactory : MonoBehaviour
 
     }
 
-    private GameObject getRandHeadPool()
-    {
-        return myPool.SpawnObject
-    }
+
 
     public GameObject CreatePlant()
     {
@@ -210,26 +270,35 @@ public class PlantFactory : MonoBehaviour
         PotState epot = attributes.Item3;
         SoilState esoil = attributes.Item4;
 
-        GameObject plant_parent;
-        GameObject plant_top;
-        GameObject plant_stem;
-        GameObject plant_head;
-        GameObject plant_bottom;
 
-        plant_parent = new GameObject();
 
-        plant_top = new GameObject();
+        string head_tag = RandomListElement<string>(PoolEnumListStrLookup[HeadStatePoolObjectMapping[ehead]]);
+        string stem_tag = RandomListElement<string>(PoolEnumListStrLookup[StemStatePoolObjectMapping[estem]]);
+        string pot_tag = RandomListElement<string>(PoolEnumListStrLookup[PotStatePoolObjectMapping[epot]]);
+        string soil_tag = RandomListElement<string>(PoolEnumListStrLookup[SoilStatePoolObjectMapping[esoil]]);
+
+        GameObject plant_parent = new GameObject();
+        plant_parent.name = "PlantParent";
+        plant_parent.transform.position = spawnOrientation.position;
+        Debug.Log(plant_parent.transform.position);
+        plant_parent.transform.rotation = spawnOrientation.rotation;
+        plant_parent.AddComponent<Rigidbody>();
+
+        GameObject plant_top = new GameObject();
+        plant_top.name = "PlantTop";
         plant_top.transform.parent = plant_parent.transform;
 
-        plant_stem = new GameObject();
-        plant_stem.transform.parent = plant_top.transform;
+        GameObject plant_stem = myPool.SpawnObject(stem_tag, new Vector3(0,0,0), new Quaternion(), plant_top.transform);
+        GameObject plant_head = myPool.SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), plant_stem.transform);
+        GameObject plant_soil = myPool.SpawnObject(soil_tag, new Vector3(0, 0, 0), new Quaternion(), plant_top.transform);
 
-        plant_head = new GameObject();
-        plant_head.transform.parent = plant_top.transform;
 
-        plant_bottom = new GameObject();
+        GameObject plant_bottom = new GameObject();
+        plant_bottom.name = "PlantBottom";
         plant_bottom.transform.parent = plant_parent.transform;
-        
+
+        GameObject plant_pot = myPool.SpawnObject(pot_tag, new Vector3(0, 0, 0), new Quaternion(), plant_bottom.transform);
+
         return plant_parent;
     }
 
