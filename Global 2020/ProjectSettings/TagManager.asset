@@ -9,6 +9,9 @@ TagManager:
   - Interactable
   - Button
   - Plant
+  - Start
+  - Exit
+  - Credit
   layers:
   - Default
   - TransparentFX
