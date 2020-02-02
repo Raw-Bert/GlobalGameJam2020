@@ -32,7 +32,7 @@ public class WateringScript : MonoBehaviour
             system.gameObject.SetActive(false);
 
 
-        system.transform.position = transform.position;
+        system.transform.position = transform.GetChild(0).position;
 
 
     }
