@@ -18,7 +18,7 @@ public class Pot : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnParticleCollision(GameObject other)
     {
         if(other.tag == "Water")
         {
