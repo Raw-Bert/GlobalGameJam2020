@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using static PlantFactory;
 
 public class MakeCube : MonoBehaviour
 {
@@ -31,52 +29,34 @@ public class MakeCube : MonoBehaviour
     {
         //Press F to make a random cube to random position
 
-        if (spawnPlant && last == null)
+        if (last == null)
         {
             //myPool.SpawnObject(pot);
             Debug.Log(transform.position);
             Vector3 pos = new Vector3(2, 1, 2);
-
-
-            
-            
-            Tuple<GameObject, PlantFactory.PlantProblem> flower_problem = PlantFactory.Instance.CreatePlant();
-            GameObject new_go = flower_problem.Item1;
-            PlantFactory.PlantProblem problem = flower_problem.Item2;
-
-
-
-
-            last = new_go;
+            last = Instantiate(test, transform.position, transform.rotation);
             last.transform.parent = parent.transform;
             last.transform.parent = parent.transform;
             spawnPlant = false;
             Debug.Log(spawnPlant);
             plantCount++;
-            test.GetComponent<Pot>().plantFixed = false;
+            test.transform.GetChild(0).GetComponent<Pot>().plantFixed = false;
             Debug.Log(plantCount);
         }
 
-        if (spawnPlant && last.GetComponent<Pot>().plantFixed)
+        if (spawnPlant && last.transform.GetChild(0).GetComponent<Pot>().plantFixed)
         {
 
             //myPool.SpawnObject(pot);
             Debug.Log(transform.position);
             Vector3 pos = new Vector3(2, 1, 2);
-
-            
-            Tuple<GameObject, PlantFactory.PlantProblem> flower_problem = PlantFactory.Instance.CreatePlant();
-            GameObject new_go = flower_problem.Item1;
-            PlantFactory.PlantProblem problem = flower_problem.Item2;
-
- 
-            last = new_go;
+            last = Instantiate(test, transform.position, transform.rotation);
             last.transform.parent = parent.transform;
             last.transform.parent = parent.transform;
             spawnPlant = false;
             Debug.Log(spawnPlant);
             plantCount++;
-            test.GetComponent<Pot>().plantFixed = false;
+            test.transform.GetChild(0).GetComponent<Pot>().plantFixed = false;
             Debug.Log(plantCount);
             //PlantFactory.MakeCube(type, pos, Quaternion.identity);
             //spawnTime = Time.time;

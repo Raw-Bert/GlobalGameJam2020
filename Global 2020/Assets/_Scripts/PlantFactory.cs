@@ -329,22 +329,23 @@ public class PlantFactory : MonoBehaviour
         plant_parent.transform.position = spawnOrientation.position;
         Debug.Log(plant_parent.transform.position);
         plant_parent.transform.rotation = spawnOrientation.rotation;
-        plant_parent.AddComponent<Rigidbody>();
+       // plant_parent.AddComponent<Rigidbody>();
+        
 
-        GameObject plant_top = new GameObject
-        {
-            name = "PlantTop"
-        };
-        plant_top.transform.parent = plant_parent.transform;
+        //GameObject plant_top = new GameObject
+        //{
+        //    name = "PlantTop"
+        //};
+        //plant_top.transform.parent = plant_parent.transform;
+        //plant_top.AddComponent<Rigidbody>();
 
-        GameObject plant_stem = SpawnObject(stem_tag, new Vector3(0,0,0), new Quaternion(), plant_top.transform);
 
-        // TODO: ability to lookup a child gameobject that contains the transform pos and rot and add the head to it.
-        GameObject stem_head_parent = plant_stem.transform.GetChild(0).gameObject;
+        //GameObject stem_head_parent = plant_stem.transform.GetChild(0).gameObject;
+
         //stem_head_parent.name = "head_location";
 
-        GameObject plant_head = SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), stem_head_parent.transform);
-        GameObject plant_soil = SpawnObject(soil_tag, new Vector3(0, 0, 0), new Quaternion(), plant_top.transform);
+
+       //plant_soil.transform.GetChild(0).gameObject.AddComponent<Rigidbody>();
 
         
         GameObject plant_bottom = new GameObject
@@ -352,8 +353,21 @@ public class PlantFactory : MonoBehaviour
             name = "PlantBottom"
         };
         plant_bottom.transform.parent = plant_parent.transform;
+        //plant_bottom.AddComponent<Rigidbody>();
 
-        GameObject plant_pot = SpawnObject(pot_tag, new Vector3(0, 0, 0), new Quaternion(), plant_bottom.transform);
+        GameObject plant_pot = SpawnObject(pot_tag, spawnOrientation.position, new Quaternion(), plant_bottom.transform);
+        //plant_pot.transform.GetChild(0).gameObject.AddComponent<Rigidbody>();
+
+        GameObject plant_soil = SpawnObject(soil_tag, spawnOrientation.position, new Quaternion(), plant_pot.transform);
+        GameObject plant_stem = SpawnObject(stem_tag, spawnOrientation.position, new Quaternion(), plant_bottom.transform);        // TODO: ability to lookup a child gameobject that contains the transform pos and rot and add the head to it.
+        GameObject plant_head = SpawnObject(head_tag, spawnOrientation.position, new Quaternion(), plant_stem.transform);
+plant_soil.transform .position= plant_pot.transform .position;
+
+ plant_soil.transform .position= plant_pot.transform .position;
+
+ plant_soil.transform .position= plant_pot.transform .position;
+
+        //plant_head.transform.GetChild(0).gameObject.AddComponent<Rigidbody>();
 
         return new Tuple<GameObject, PlantProblem>(plant_parent, problem);
     }

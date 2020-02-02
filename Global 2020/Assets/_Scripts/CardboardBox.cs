@@ -20,7 +20,7 @@ public class CardboardBox : MonoBehaviour
     {
         if (other.transform.GetChild(0).tag == "Plant")
         {
-            Destroy(other.gameObject);
+            Destroy(other.transform.parent.gameObject);
         }
     }
 }
