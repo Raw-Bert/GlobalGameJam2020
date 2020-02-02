@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MakeCube : MonoBehaviour
 {
+    public GameObject parent;
     public int plantCount;
     private int type;
     private float x;
@@ -32,8 +33,9 @@ public class MakeCube : MonoBehaviour
             Debug.Log(transform.position);
             type = Random.Range(1, 8);
             Vector3 pos = new Vector3(2, 1, 2);
-            Instantiate(test, transform.position, transform.rotation);
-            
+            var thing = Instantiate(test, transform.position, transform.rotation);
+            thing.transform.parent = parent.transform;
+            thing.transform.parent = parent.transform;
             //PlantFactory.MakeCube(type, pos, Quaternion.identity);
             //spawnTime = Time.time;
             

@@ -9,6 +9,7 @@ TagManager:
   - Interactable
   - Button
   - Plant
+  - SoapButton
   layers:
   - Default
   - TransparentFX
