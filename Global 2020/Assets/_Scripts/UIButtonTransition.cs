@@ -21,6 +21,7 @@ public class UIButtonTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
     public Vector3 maxScale;
 
     public GameObject credit = null;
+    public GameObject spawnPos = null;
 
     private void Awake()
     {
@@ -88,6 +89,6 @@ public class UIButtonTransition : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     private void spawnCredit()
     {
-        Instantiate(credit, transform.position, Quaternion.identity);
+        Instantiate(credit, spawnPos.transform.position, Quaternion.identity);
     }
 }
