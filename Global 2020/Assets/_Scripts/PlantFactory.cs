@@ -8,7 +8,7 @@ using System.Reflection;
 
 public class PlantFactory : MonoBehaviour
 {
-    private ObjectPool myPool;
+    //private ObjectPool myPool;
 
     public Transform spawnOrientation;
 
@@ -82,8 +82,9 @@ public class PlantFactory : MonoBehaviour
     private void addToStructures(string tag_prefix, string tag_suffix, PoolObjects pool_enum_val, GameObject prefab, int pool_instances)
     {
         string tag = tag_prefix + tag_suffix;
-        myPool.AddPool(new ObjectPool.Pool(tag, prefab, pool_instances));
-
+        
+        
+        //myPool.AddPool(new ObjectPool.Pool(tag, prefab, pool_instances));
         //Debug.Log(PoolEnumListStrLookup[pool_enum_val]);
 
         if (PoolEnumListStrLookup.ContainsKey(pool_enum_val))
@@ -94,7 +95,22 @@ public class PlantFactory : MonoBehaviour
         {
             PoolEnumListStrLookup.Add(pool_enum_val, new List<string>() { tag });
         }
+        gameObjectLookup.Add(tag, prefab);
+    }
 
+    public GameObject SpawnObject(string tag, Vector3 pos, Quaternion rot, Transform parent_transform)
+    {
+
+        
+
+        GameObject objectGoSpawn = Instantiate(gameObjectLookup[tag], pos, rot, parent_transform);
+
+        //Take off the first object of pool's queue
+        objectGoSpawn.transform.position = pos;
+        objectGoSpawn.transform.rotation = rot;
+        objectGoSpawn.transform.parent = parent_transform;
+
+        return objectGoSpawn;
     }
 
     public enum HeadState
@@ -185,12 +201,12 @@ public class PlantFactory : MonoBehaviour
         return RandomEnumValue<PlantProblem>();
     }
 
-
+    private Dictionary<string, GameObject> gameObjectLookup = new Dictionary<string, GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
-        myPool = ObjectPool.Instance;
+        //myPool = ObjectPool.Instance;
 
         int instances = 20;
 
@@ -203,7 +219,6 @@ public class PlantFactory : MonoBehaviour
             addToStructures(pb.tag, "_soil_dry", PoolObjects.soil_dry, pb.soilDry, instances);
             addToStructures(pb.tag, "_soil_needs_fertilizer", PoolObjects.soil_needs_fertilizer, pb.soilNeedsFertalizer, instances);
 
-            Debug.Log("MyPool: " + myPool.poolDict);
         }
 
         foreach (PlantStem ps in plantStems)
@@ -255,7 +270,7 @@ public class PlantFactory : MonoBehaviour
 
             case PlantProblem.malnourished:
                 return new Tuple<HeadState, StemState, PotState, SoilState>
-                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.normal);
+                    (HeadState.normal, StemState.normal, PotState.broken, SoilState.discolored);
 
             case PlantProblem.infestation:
                 return new Tuple<HeadState, StemState, PotState, SoilState>
@@ -280,7 +295,7 @@ public class PlantFactory : MonoBehaviour
 
 
 
-    public GameObject CreatePlant()
+    public Tuple<GameObject, PlantProblem> CreatePlant()
     {
         PlantProblem problem = GenerateProblem();
         Tuple<HeadState, StemState, PotState, SoilState> attributes = AttributeBuilder(problem);
@@ -314,16 +329,14 @@ public class PlantFactory : MonoBehaviour
         };
         plant_top.transform.parent = plant_parent.transform;
 
-        GameObject plant_stem = myPool.SpawnObject(stem_tag, new Vector3(0,0,0), new Quaternion(), plant_top.transform);
+        GameObject plant_stem = SpawnObject(stem_tag, new Vector3(0,0,0), new Quaternion(), plant_top.transform);
 
         // TODO: ability to lookup a child gameobject that contains the transform pos and rot and add the head to it.
         //GameObject stem_head_parent = new GameObject();
         //stem_head_parent.name = "head_location";
 
-        GameObject plant_head = myPool.SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), plant_stem.transform);
-        GameObject plant_soil = myPool.SpawnObject(soil_tag, new Vector3(0, 0, 0), new Quaternion(), plant_top.transform);
-
-
+        GameObject plant_head = SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), plant_stem.transform);
+        GameObject plant_soil = SpawnObject(soil_tag, new Vector3(0, 0, 0), new Quaternion(), plant_top.transform);
 
         
         GameObject plant_bottom = new GameObject
@@ -332,9 +345,9 @@ public class PlantFactory : MonoBehaviour
         };
         plant_bottom.transform.parent = plant_parent.transform;
 
-        GameObject plant_pot = myPool.SpawnObject(pot_tag, new Vector3(0, 0, 0), new Quaternion(), plant_bottom.transform);
+        GameObject plant_pot = SpawnObject(pot_tag, new Vector3(0, 0, 0), new Quaternion(), plant_bottom.transform);
 
-        return plant_parent;
+        return new Tuple<GameObject, PlantProblem>(plant_parent, problem);
     }
 
 
