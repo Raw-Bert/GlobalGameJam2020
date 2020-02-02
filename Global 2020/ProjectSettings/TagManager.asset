@@ -17,6 +17,7 @@ TagManager:
   - Stams_stem_normal
   - Pots_soil_normal
   - Heads_head_normal
+  - Water
   layers:
   - Default
   - TransparentFX

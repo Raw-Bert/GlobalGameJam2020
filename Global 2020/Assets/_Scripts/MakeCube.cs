@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using static PlantFactory;
 
 public class MakeCube : MonoBehaviour
 {
@@ -15,7 +17,8 @@ public class MakeCube : MonoBehaviour
     //public GameObject testEmpty;
     public GameObject test;
     public GameObject plant;
-    
+
+    private GameObject last;
 
     //public bool plantfixed = false;
 
@@ -28,15 +31,48 @@ public class MakeCube : MonoBehaviour
     {
         //Press F to make a random cube to random position
 
-        if (spawnPlant && test.GetComponent<Pot>().plantFixed)
+        if (spawnPlant && last == null)
         {
-            
             //myPool.SpawnObject(pot);
             Debug.Log(transform.position);
             Vector3 pos = new Vector3(2, 1, 2);
-            var thing = Instantiate(test, transform.position, transform.rotation);
-            thing.transform.parent = parent.transform;
-            thing.transform.parent = parent.transform;
+
+
+            
+            
+            Tuple<GameObject, PlantFactory.PlantProblem> flower_problem = PlantFactory.Instance.CreatePlant();
+            GameObject new_go = flower_problem.Item1;
+            PlantFactory.PlantProblem problem = flower_problem.Item2;
+
+
+
+
+            last = new_go;
+            last.transform.parent = parent.transform;
+            last.transform.parent = parent.transform;
+            spawnPlant = false;
+            Debug.Log(spawnPlant);
+            plantCount++;
+            test.GetComponent<Pot>().plantFixed = false;
+            Debug.Log(plantCount);
+        }
+
+        if (spawnPlant && last.GetComponent<Pot>().plantFixed)
+        {
+
+            //myPool.SpawnObject(pot);
+            Debug.Log(transform.position);
+            Vector3 pos = new Vector3(2, 1, 2);
+
+            
+            Tuple<GameObject, PlantFactory.PlantProblem> flower_problem = PlantFactory.Instance.CreatePlant();
+            GameObject new_go = flower_problem.Item1;
+            PlantFactory.PlantProblem problem = flower_problem.Item2;
+
+ 
+            last = new_go;
+            last.transform.parent = parent.transform;
+            last.transform.parent = parent.transform;
             spawnPlant = false;
             Debug.Log(spawnPlant);
             plantCount++;
@@ -44,7 +80,7 @@ public class MakeCube : MonoBehaviour
             Debug.Log(plantCount);
             //PlantFactory.MakeCube(type, pos, Quaternion.identity);
             //spawnTime = Time.time;
-            
+
         }
 
     }

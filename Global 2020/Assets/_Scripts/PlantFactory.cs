@@ -8,9 +8,17 @@ using System.Reflection;
 
 public class PlantFactory : MonoBehaviour
 {
-    //private ObjectPool myPool;
 
-    public Transform spawnOrientation;
+ public static PlantFactory Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+        //Instance.poolDict = new Dictionary<string, Queue<GameObject>>();
+    }
+
+    //private ObjectPool myPool;
+   public Transform spawnOrientation;
 
     public bool CreateFlower;
 
@@ -238,11 +246,11 @@ public class PlantFactory : MonoBehaviour
     
     private void Update()
     {
-        if (CreateFlower)
-        {
-            CreatePlant();
-            CreateFlower = false;
-        }
+        //if (CreateFlower)
+        //{
+        //    CreatePlant();
+        //    CreateFlower = false;
+        //}
 
     }
 
