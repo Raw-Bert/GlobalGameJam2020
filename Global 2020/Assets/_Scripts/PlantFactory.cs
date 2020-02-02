@@ -332,10 +332,10 @@ public class PlantFactory : MonoBehaviour
         GameObject plant_stem = SpawnObject(stem_tag, new Vector3(0,0,0), new Quaternion(), plant_top.transform);
 
         // TODO: ability to lookup a child gameobject that contains the transform pos and rot and add the head to it.
-        //GameObject stem_head_parent = new GameObject();
+        GameObject stem_head_parent = plant_stem.transform.GetChild(0).gameObject;
         //stem_head_parent.name = "head_location";
 
-        GameObject plant_head = SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), plant_stem.transform);
+        GameObject plant_head = SpawnObject(head_tag, new Vector3(0, 0, 0), new Quaternion(), stem_head_parent.transform);
         GameObject plant_soil = SpawnObject(soil_tag, new Vector3(0, 0, 0), new Quaternion(), plant_top.transform);
 
         
