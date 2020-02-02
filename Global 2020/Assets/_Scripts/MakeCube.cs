@@ -39,7 +39,7 @@ public class MakeCube : MonoBehaviour
             last.transform.parent = parent.transform;
             spawnPlant = false;
             Debug.Log(spawnPlant);
-            plantCount++;
+            //plantCount++;
             test.transform.GetChild(0).GetComponent<Pot>().plantFixed = false;
             Debug.Log(plantCount);
         }
