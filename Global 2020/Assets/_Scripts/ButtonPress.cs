@@ -11,7 +11,7 @@ public class ButtonPress : MonoBehaviour
         {
             //if (plantSpawner.GetComponent<MakeCube>().plantFixed == true)
             //{
-                plantSpawner.GetComponent<MakeCube>().spawnPlant = true;
+            plantSpawner.GetComponent<MakeCube>().spawnPlant = true;
             //    plantSpawner.GetComponent<MakeCube>().plantFixed = false;
             //}
         }

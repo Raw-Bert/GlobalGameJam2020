@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1758231766388676247}
   - component: {fileID: 6456144522278743351}
   - component: {fileID: 3335328002739996057}
+  - component: {fileID: 8068191420788910907}
   m_Layer: 0
   m_Name: Pot
   m_TagString: Interactable
@@ -125,6 +126,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeHand: {fileID: 0}
+--- !u!114 &8068191420788910907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3453658251143651039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7597aa9fb968f5f499aeeeee82ea2b23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantFixed: 1
 --- !u!1 &5319874108754975117
 GameObject:
   m_ObjectHideFlags: 0

@@ -277,6 +277,7 @@ public class PlantFactory : MonoBehaviour
         string pot_tag = RandomListElement<string>(PoolEnumListStrLookup[PotStatePoolObjectMapping[epot]]);
         string soil_tag = RandomListElement<string>(PoolEnumListStrLookup[SoilStatePoolObjectMapping[esoil]]);
 
+        //spawnOrientation.transform = transform;
         GameObject plant_parent = new GameObject();
         plant_parent.name = "PlantParent";
         plant_parent.transform.position = spawnOrientation.position;

@@ -13,6 +13,10 @@ TagManager:
   - Exit
   - Credit
   - SoapButton
+  - Pots_pot_broken
+  - Stams_stem_normal
+  - Pots_soil_normal
+  - Heads_head_normal
   layers:
   - Default
   - TransparentFX

@@ -17,12 +17,12 @@ public class WateringScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 forward = multiVec3(transform.forward, new Vector3(1, 0, 1)).normalized;
-        Vector3 vecDown = transform.forward.normalized;
+        Vector3 forward = multiVec3(transform.right, new Vector3(1, 0, 1)).normalized;
+        Vector3 vecDown = transform.right.normalized;
 
         float angle = Mathf.Acos(Dot(forward, vecDown) / (forward.magnitude * vecDown.magnitude)) * 180 / Mathf.PI;
 
-        if (angle > 25.0f && vecDown.y < 0.0f)
+        if (angle > 25.0f && vecDown.y > 0.0f)
         {
             system.gameObject.SetActive(true);
 

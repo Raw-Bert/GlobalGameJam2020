@@ -14,8 +14,9 @@ public class MakeCube : MonoBehaviour
     float spawnTime = 0;
     //public GameObject testEmpty;
     public GameObject test;
+    public GameObject plant;
 
-    public bool plantfixed = false;
+    //public bool plantfixed = false;
 
     void start()
     {
@@ -26,26 +27,24 @@ public class MakeCube : MonoBehaviour
     {
         //Press F to make a random cube to random position
 
-        if (spawnPlant == true)
+        if (spawnPlant && plant.GetComponent<Pot>().plantFixed)
         {
-            spawnPlant = false;
+            
             //myPool.SpawnObject(pot);
             Debug.Log(transform.position);
-            type = Random.Range(1, 8);
             Vector3 pos = new Vector3(2, 1, 2);
             var thing = Instantiate(test, transform.position, transform.rotation);
             thing.transform.parent = parent.transform;
             thing.transform.parent = parent.transform;
+            spawnPlant = false;
+            Debug.Log(spawnPlant);
+            plantCount++;
+             plant.GetComponent<Pot>().plantFixed = false;
+             Debug.Log(plantCount);
             //PlantFactory.MakeCube(type, pos, Quaternion.identity);
             //spawnTime = Time.time;
             
         }
 
-        if (plantfixed == true)
-        {
-            plantCount++;
-            spawnPlant = true;
-            plantfixed = false;
-        }
     }
 }
